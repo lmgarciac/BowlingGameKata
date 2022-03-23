@@ -7,20 +7,22 @@ using UnityEngine.TestTools;
 
 public class BowlingGameKataShould
 {
+    // NOTAS//
+    //Agregar al Readme del proyecto que significa cada cosa (Frame, Roll, Pin, etc.)
 
     [UnityTest]
-
-    public IEnumerator InitialTest()
+    public IEnumerator InitialTest() //Borrar este test
     {
         yield return null;
         Assert.AreEqual(true, true);
     }
 
-    //Cada partida se compone de 10 turnos
+    //1° Requerimiento: Cada partida se compone de 10 turnos
+    //Tiempo Estimado: 5min
+    //Tiempo Real: 5min
 
     [UnityTest]
-
-    public IEnumerator HaveOnly10Turns()
+    public IEnumerator HaveOnly10Turns() //Refactor Nombre
     {
         //Arrange 
         yield return null;
@@ -33,11 +35,11 @@ public class BowlingGameKataShould
 
     }
 
-    //Hay 10 bolos que se intentan tirar en cada turno
-    //Estimado 10m, real 7m
+    //2° Requerimiento: Hay 10 bolos que se intentan tirar en cada turno
+    //Tiempo Estimado: 10min
+    //Tiempo Real: 7min
 
     [UnityTest]
-
     public IEnumerator HaveOnly10Pins()
     {
         //Arrange
@@ -49,11 +51,11 @@ public class BowlingGameKataShould
         Assert.AreEqual(bowlingMatch.pinsAmount, 10);
     }
 
-    //En cada turno el jugador hace 2 tiradas
-    //Estimado 15 ,
+    //3° Requerimiento: En cada turno el jugador hace 2 tiradas
+    //Estimado: 15min
+    //Real: 15min
 
     [UnityTest]
-
     public IEnumerator Have2RollsForEveryFrame()
     {
         //Arrange
@@ -70,8 +72,9 @@ public class BowlingGameKataShould
         Assert.AreEqual(frame.throwedRolls, 2);
     }
 
-    //Si en un turno el jugador no tira los 10 bolos, la puntuacion del turno es el total de bolos tirados
-    //Estimado 20
+    //4° Requerimiento: Si en un turno el jugador no tira los 10 bolos, la puntuacion del turno es el total de bolos tirados
+    //Estimado: 20min
+    //Real: 40min
 
     [UnityTest]
 
@@ -84,7 +87,7 @@ public class BowlingGameKataShould
 
         //Act
         frame.knockedPins = 5;
-        framePoints = frame.CalculatePoints();
+        framePoints = frame.CalculatePoints(); //Poner el método CalculatePoints dentro de Roll y hacer Roll Roll en este test
 
         //Assert
         Assert.AreEqual(framePoints, 5);
@@ -92,7 +95,6 @@ public class BowlingGameKataShould
     }
 
     //PointsGivenSumOfPinesKnockedIfLessThan10PinsKnocked
-
 
 }
 
@@ -103,7 +105,7 @@ public class BowlingMatch
         this.matchFrames = matchFrames;
         this.frameList = new List<Frame>();
     }
-
+    //Borrar todas las variables que no se usen
     public int matchFrames;
     public int pinsAmount = 10;
     public int throwedRolls;
