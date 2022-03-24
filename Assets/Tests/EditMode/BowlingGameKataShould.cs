@@ -55,7 +55,7 @@ public class BowlingGameKataShould
         //Arrange
         yield return null;
         Frame frame = new Frame();
-        
+
         //Act
 
         //Each frame has two rolls
@@ -83,7 +83,7 @@ public class BowlingGameKataShould
         frame.Roll(2);
 
         //Assert
-        Assert.AreEqual(6, frame.framePoints);
+        Assert.AreEqual(6, frame.frameTotalPoints);
 
     }
 
@@ -99,13 +99,13 @@ public class BowlingGameKataShould
         //Arrange
         yield return null;
         BowlingMatch bowlingMatch = new BowlingMatch(10);
-        List<int> rollSequence = new List<int>{ 5,5,2 };
+        List<int> rollSequence = new List<int> { 5, 5, 2 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence); 
+        bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(12, bowlingMatch.frameList.First().framePoints);
+        Assert.AreEqual(12, bowlingMatch.frameList.First().frameTotalPoints);
 
     }
 
@@ -127,7 +127,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(16, bowlingMatch.frameList.First().framePoints);
+        Assert.AreEqual(16, bowlingMatch.frameList.First().frameTotalPoints);
 
     }
 
@@ -169,7 +169,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(18, bowlingMatch.frameList.Last().framePoints);
+        Assert.AreEqual(18, bowlingMatch.frameList.Last().frameTotalPoints);
 
     }
 
@@ -185,13 +185,13 @@ public class BowlingGameKataShould
         //Arrange
         yield return null;
         BowlingMatch bowlingMatch = new BowlingMatch(10);
-        List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 6, 4, 3};
+        List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 6, 4, 3 };
 
         //Act
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(13, bowlingMatch.frameList.Last().framePoints);
+        Assert.AreEqual(13, bowlingMatch.frameList.Last().frameTotalPoints);
 
     }
 
@@ -213,7 +213,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(20, bowlingMatch.frameList.Last().framePoints);
+        Assert.AreEqual(20, bowlingMatch.frameList.Last().frameTotalPoints);
     }
 
     //Requerimiento: Verificar Puntaje Total
@@ -222,7 +222,22 @@ public class BowlingGameKataShould
 
     [UnityTest]
 
-    public IEnumerator Provide_Total_Score()
+    public IEnumerator Return_Correct_Value_If_All_Zeroes()
+    {
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence);
+
+        //Assert
+        Assert.AreEqual(0, bowlingMatch.GetTotalScore());
+    }
+
+    [UnityTest]
+
+    public IEnumerator Return_Correct_Value_If_All_Strikes()
     {
         //Arrange
         yield return null;
@@ -235,6 +250,85 @@ public class BowlingGameKataShould
         //Assert
         Assert.AreEqual(300, bowlingMatch.GetTotalScore());
     }
+
+    [UnityTest]
+
+    public IEnumerator Return_Correct_Value_If_All_Spares()
+    {
+        //Arrange
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int> { 5, 5, 6, 4, 3, 7, 1, 9, 2, 8, 3, 7, 4, 6, 2, 8, 8, 2, 1, 9, 5 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence);
+
+        //Assert
+        Assert.AreEqual(135, bowlingMatch.GetTotalScore());
+    }
+
+    [UnityTest]
+
+    public IEnumerator Return_Correct_Value_If_No_Strikes_Or_Spares()
+    {
+        //Arrange
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int> { 3, 2, 5, 1, 4, 2, 7, 1, 4, 2, 0, 8, 1, 7, 1, 0, 0, 1, 3, 2 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence);
+
+        //Assert
+        Assert.AreEqual(54, bowlingMatch.GetTotalScore());
+    }
+
+    [UnityTest]
+
+    public IEnumerator Return_Correct_Value_If_Mixed_Strikes_And_Spares()
+    {
+        //Arrange
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int> { 5, 5, 10, 10, 3, 7, 1, 9, 10, 8, 2, 10, 10, 10, 5, 5 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence);
+
+        //Assert
+        Assert.AreEqual(209, bowlingMatch.GetTotalScore());
+    }
+
+    [UnityTest]
+    public IEnumerator Return_Correct_Value_For_Mixed_Test_Suite()
+    {
+        //Arrange
+        yield return null;
+
+        foreach (var rollSequence in mixedTestSuiteDataSource)
+        {
+            BowlingMatch bowlingMatch = new BowlingMatch(10);
+
+            //Act
+            bowlingMatch.CalculateMatchPoints(rollSequence.Item1);
+
+            //Assert
+            Assert.AreEqual(rollSequence.Item2, bowlingMatch.GetTotalScore());
+        }
+    }
+
+    List<(List<int>, int)> mixedTestSuiteDataSource = new List<(List<int>, int)>
+    {
+        (new List<int> {5,5,4,5,8,2,10,0,10,10,6,2,10,4,6,10,10,0}, 169),
+        (new List<int> {5,5,4,0,8,1,10,0,10,10,10,10,4,6,10,10,5}, 186),
+        (new List<int> {10,10,10,10,10,10,10,10,10,10,10,2}, 292),
+        (new List<int> {8,2,10,10,10,10,10,10,10,10,10,10,7}, 287),
+        (new List<int> {8,0,7,0,5,3,9,1,9,1,10,8,0,5,1,3,7,9,0}, 122),
+        (new List<int> {8,2,9,0,4,4,7,2,9,0,10,10,8,0,3,5,9,1,7}, 133),
+        (new List<int> {7,0,6,3,8,2,6,4,10,10,7,3,7,2,8,2,7,3,9}, 161),
+        (new List<int> {9,1,8,1,9,1,8,2,10,10,10,9,1,10,10,10,9}, 223),
+        (new List<int> {10,10,9,0,9,1,10,7,3,8,1,10,10,8,1}, 180),
+    };
 }
 
 public class BowlingMatch
@@ -242,15 +336,14 @@ public class BowlingMatch
     public BowlingMatch(int matchFrames)
     {
         this.matchFrames = matchFrames;
-        this.frameList = new List<Frame>();
     }
-    //Borrar todas las variables que no se usen
+
     public int matchFrames;
     public int pinsAmount = 10;
-    public int throwedRolls;
-    public int knockPins;
     public List<Frame> frameList = new List<Frame>();
     public bool isLastFrame;
+
+    public List<int> bonusRolls = new List<int>();
 
     public void CalculateMatchPoints(List<int> rollSequence) //  11min  22max  10 
     {
@@ -258,46 +351,99 @@ public class BowlingMatch
 
         foreach (var knockedPins in rollSequence)
         {
-            if (frameList.Count != 0)
+            currentFrame.Roll(knockedPins);
+
+            if (!IsFirstFrame())
             {
                 if (isLastFrame) //El error esta en que el frame 9 es el último y no le está dejando agregarse sus segundos 10 puntos al frame 8
                 {
-                    frameList.Last().AddBonusPoint(knockedPins);
+                    bonusRolls.Add(knockedPins);
                     continue;
                 }
 
-                if (frameList.Last().isSpare)
+                if (IsRollASpareBonus(currentFrame)) // Is Spare Bonus
                 {
-                    frameList.Last().AddBonusPoint(knockedPins);
+                    frameList.Last().AddFrameBonusPoint(knockedPins);
                 }
 
-                if (frameList.Last().isStrike)
+                if (IsRollAFirstStrikeBonus(currentFrame)) //Is First Strike Bonus
                 {
-                    frameList.Last().AddBonusPoint(knockedPins);
+                    frameList.Last().AddFrameBonusPoint(knockedPins);
                 }
 
                 if (frameList.Count >= 2)
                 {
-                    if (frameList[frameList.Count - 2].isStrike)
+                    if (IsRollASecondStrikeBonus(currentFrame)) //Is Second Strike Bonus
                     {
-                        frameList[frameList.Count - 2].AddBonusPoint(knockedPins);
+                        frameList[frameList.Count - 2].AddFrameBonusPoint(knockedPins);
                     }
                 }
             }
-            currentFrame.Roll(knockedPins);
 
-            if (currentFrame.IsFrameEnded())
+            if (currentFrame.IsFrameCompleted())
             {
                 frameList.Add(currentFrame);
                 currentFrame = new Frame();
 
-                if (frameList.Count == matchFrames)
+                if (IsLastFrame())
                 {
                     isLastFrame = true;
                 }
             }
         }
+
+        AddLastBonusRolls();
     }
+
+    private bool IsRollASpareBonus(Frame currentFrame)
+    {
+        return frameList.Last().frameIsSpare && currentFrame.throwedRolls == 1;
+    }
+
+    private bool IsRollAFirstStrikeBonus(Frame currentFrame)
+    {
+        return frameList.Last().frameIsStrike && frameList.Last().addedBonusRolls < 2;
+    }
+
+    private bool IsRollASecondStrikeBonus(Frame currentFrame)
+    {
+        return frameList[frameList.Count - 2].frameIsStrike && frameList[frameList.Count - 2].addedBonusRolls < 2;
+    }
+
+    private bool IsLastFrame()
+    {
+        return frameList.Count == matchFrames;
+    }
+
+    private bool IsFirstFrame()
+    {
+        return frameList.Count == 0;
+    }
+
+    private void AddLastBonusRolls()
+    {
+        if (!IsFirstFrame())
+        {
+            if (frameList.Last().frameIsSpare) // Is Spare Bonus
+            {
+                frameList.Last().AddFrameBonusPoint(bonusRolls.Sum());
+            }
+
+            if (frameList.Last().frameIsStrike) //Is First Strike Bonus
+            {
+                frameList.Last().AddFrameBonusPoint(bonusRolls.Sum());
+            }
+
+            if (frameList.Count >= 2)
+            {
+                if (frameList[frameList.Count - 2].frameIsStrike) //Is Second Strike Bonus
+                {
+                    frameList[frameList.Count - 2].AddFrameBonusPoint(bonusRolls.First());
+                }
+            }
+        }
+    }
+
 
     public int GetTotalScore()
     {
@@ -305,58 +451,51 @@ public class BowlingMatch
 
         foreach (var frame in frameList)
         {
-            totalScore += frame.framePoints;
+            totalScore += frame.frameTotalPoints;
         }
 
         return totalScore;
     }
-
 }
 
 public class Frame
 {
-    //puntos , rolls , pinos tirados 
     public int throwedRolls;
     public int frameKnockedPins;
-    public int framePoints;
-    public bool isSpare;
-    public bool isStrike;
+    public int frameTotalPoints;
+    public bool frameIsSpare;
+    public bool frameIsStrike;
+    public int addedBonusRolls;
 
     public void Roll(int rollKnockedPins = 0)
-    {
-       
-        if (IsFrameEnded()) return;
+    {     
+        if (IsFrameCompleted()) return;
         throwedRolls++;
         
         frameKnockedPins += rollKnockedPins;
-        framePoints += rollKnockedPins;
+        frameTotalPoints += rollKnockedPins;
 
-        isStrike = CheckStrike(rollKnockedPins);
-        isSpare = CheckSpare();
+        frameIsStrike = CheckStrikeInFrame(rollKnockedPins);
+        frameIsSpare = CheckSpareInFrame();
     }
 
-    public bool IsFrameEnded()
+    private bool CheckSpareInFrame()
     {
-        return (isStrike || throwedRolls == 2);
+        return frameKnockedPins == 10 && frameIsStrike == false;
     }
 
-    private bool CheckStrike(int rollKnockedPins)
+    private bool CheckStrikeInFrame(int rollKnockedPins)
     {
         return rollKnockedPins == 10 && throwedRolls == 1;
     }
 
-    private bool CheckSpare()
+    public void AddFrameBonusPoint(int bonusPoint)
     {
-        return frameKnockedPins == 10 && isStrike == false;
+        frameTotalPoints += bonusPoint;
+        addedBonusRolls++;
     }
-
-    public void AddBonusPoint(int bonusPoint)
+    public bool IsFrameCompleted()
     {
-        framePoints += bonusPoint;
+        return (frameIsStrike || throwedRolls == 2);
     }
 }
-//Arrange
-
-//Act
-
-//Assert
