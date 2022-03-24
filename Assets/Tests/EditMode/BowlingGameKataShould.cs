@@ -112,7 +112,7 @@ public class BowlingGameKataShould
     //6° Requerimiento: Si en la primer tirada del turno tira los 10 bolos (un strike)
     //el turno acaba y la puntuacion es 10 mas el numero de bolos de las dos tiradas siguientes.
     //Estimado: 30min
-    //Real: 
+    //Real: 25min
 
     [UnityTest]
 
@@ -130,6 +130,9 @@ public class BowlingGameKataShould
         Assert.AreEqual(16, bowlingMatch.frameList.First().framePoints);
 
     }
+
+    //6° Requerimiento: Si el jugador logra un spare o un strike en el ultimo turno,
+    // obtiene una o dos tiradas mas (respectivamente) de bonificacion. Esas Tiradas cuentan como parte del mismo turno (el decimo).
 
 
 }
@@ -154,25 +157,31 @@ public class BowlingMatch
 
         foreach (var knockedPins in rollSequence)
         {    
+
+
+            if (frameList.Count != 0)
+            {
+
+                if (frameList.Last().isSpare)
+                {
+                    frameList.Last().AddBonusPoint(knockedPins);
+                }
+
+                if (frameList.Last().isStrike)
+                {
+                    frameList.Last().AddBonusPoint(knockedPins);
+                }
+            }
+
             currentFrame.Roll(knockedPins);
-            
+
             if (currentFrame.IsFrameEnded())
             {
                 frameList.Add(currentFrame);
                 currentFrame = new Frame();
                 continue;
             }
-            if (frameList.Count == 0) continue;
 
-            if (frameList.Last().isSpare)
-            {
-                frameList.Last().AddBonusPoint(knockedPins);
-            }
-
-            if (frameList.Last().isStrike)
-            {
-                frameList.Last().AddBonusPoint(knockedPins);
-            }
         }
     }
 
