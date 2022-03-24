@@ -16,7 +16,7 @@ public class BowlingGameKataShould
     //Tiempo Real: 5min
 
     [UnityTest]
-    public IEnumerator HaveOnly10Frames()
+    public IEnumerator Have_Only_10_Frames()
     {
         //Arrange 
         yield return null;
@@ -34,7 +34,7 @@ public class BowlingGameKataShould
     //Tiempo Real: 7min
 
     [UnityTest]
-    public IEnumerator HaveOnly10Pins()
+    public IEnumerator Have_Only_10_Pins()
     {
         //Arrange
         yield return null;
@@ -50,7 +50,7 @@ public class BowlingGameKataShould
     //Real: 15min
 
     [UnityTest]
-    public IEnumerator Have2RollsForEveryFrame()
+    public IEnumerator Have_2_Rolls_For_Every_Frame()
     {
         //Arrange
         yield return null;
@@ -63,7 +63,7 @@ public class BowlingGameKataShould
         frame.Roll();
 
         //Assert
-        Assert.AreEqual(2, frame.throwedRolls);
+        Assert.AreEqual(2, frame.ThrowedRolls);
     }
 
     //4° Requerimiento: Si en un turno el jugador no tira los 10 bolos, la puntuacion del turno es el total de bolos tirados
@@ -72,7 +72,7 @@ public class BowlingGameKataShould
 
     [UnityTest]
 
-    public IEnumerator PointsGivenInFrameIsSumOfPinesKnockedIfLessThan10PinsKnocked()
+    public IEnumerator Points_Given_In_Frame_Is_Sum_Of_Pines_Knocked_If_Less_Than_10_Pins_Knocked()
     {
         //Arrange
         yield return null;
@@ -83,7 +83,7 @@ public class BowlingGameKataShould
         frame.Roll(2);
 
         //Assert
-        Assert.AreEqual(6, frame.frameTotalPoints);
+        Assert.AreEqual(6, frame.FrameTotalPoints);
 
     }
 
@@ -94,7 +94,7 @@ public class BowlingGameKataShould
 
     [UnityTest]
 
-    public IEnumerator PointsGivenInFrameIs10PlusNextRollKnockedPinesIfSpare()
+    public IEnumerator Points_Given_In_Frame_Is_10_Plus_Next_Roll_Knocked_Pines_If_Spare()
     {
         //Arrange
         yield return null;
@@ -105,7 +105,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(12, bowlingMatch.frameList.First().frameTotalPoints);
+        Assert.AreEqual(12, bowlingMatch.frameList.First().FrameTotalPoints);
 
     }
 
@@ -127,7 +127,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(16, bowlingMatch.frameList.First().frameTotalPoints);
+        Assert.AreEqual(16, bowlingMatch.frameList.First().FrameTotalPoints);
 
     }
 
@@ -169,7 +169,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(18, bowlingMatch.frameList.Last().frameTotalPoints);
+        Assert.AreEqual(18, bowlingMatch.frameList.Last().FrameTotalPoints);
 
     }
 
@@ -191,7 +191,7 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(13, bowlingMatch.frameList.Last().frameTotalPoints);
+        Assert.AreEqual(13, bowlingMatch.frameList.Last().FrameTotalPoints);
 
     }
 
@@ -213,12 +213,10 @@ public class BowlingGameKataShould
         bowlingMatch.CalculateMatchPoints(rollSequence);
 
         //Assert
-        Assert.AreEqual(20, bowlingMatch.frameList.Last().frameTotalPoints);
+        Assert.AreEqual(20, bowlingMatch.frameList.Last().FrameTotalPoints);
     }
 
-    //Requerimiento: Verificar Puntaje Total
-    //Estimado: 5min
-    //Real: 5min
+    // Escenarios de Test Completos:
 
     [UnityTest]
 
@@ -333,19 +331,19 @@ public class BowlingGameKataShould
 
 public class BowlingMatch
 {
-    public BowlingMatch(int matchFrames)
+    public BowlingMatch(int matchFrames) //Esto no es requerido
     {
         this.matchFrames = matchFrames;
     }
 
-    public int matchFrames;
-    public int pinsAmount = 10;
+    public int matchFrames; //¿¿Que hacer si solo un TEST es el que lee este campo que debería ser privado??
+    public int pinsAmount = 10; //Esto no es requerido
     public List<Frame> frameList = new List<Frame>();
     public bool isLastFrame;
 
-    public List<int> bonusRolls = new List<int>();
+    private List<int> lastFrameBonusRolls = new List<int>();
 
-    public void CalculateMatchPoints(List<int> rollSequence) //  11min  22max  10 
+    public void CalculateMatchPoints(List<int> rollSequence)
     {
         Frame currentFrame = new Frame();
 
@@ -355,9 +353,9 @@ public class BowlingMatch
 
             if (!IsFirstFrame())
             {
-                if (isLastFrame) //El error esta en que el frame 9 es el último y no le está dejando agregarse sus segundos 10 puntos al frame 8
+                if (isLastFrame)
                 {
-                    bonusRolls.Add(knockedPins);
+                    lastFrameBonusRolls.Add(knockedPins);
                     continue;
                 }
 
@@ -392,22 +390,23 @@ public class BowlingMatch
             }
         }
 
-        AddLastBonusRolls();
+        if (lastFrameBonusRolls.Count != 0)
+            AddLastBonusRolls();
     }
 
     private bool IsRollASpareBonus(Frame currentFrame)
     {
-        return frameList.Last().frameIsSpare && currentFrame.throwedRolls == 1;
+        return frameList.Last().FrameIsSpare && frameList.Last().AddedBonusRolls < 1;
     }
 
     private bool IsRollAFirstStrikeBonus(Frame currentFrame)
     {
-        return frameList.Last().frameIsStrike && frameList.Last().addedBonusRolls < 2;
+        return frameList.Last().FrameIsStrike && frameList.Last().AddedBonusRolls < 2;
     }
 
     private bool IsRollASecondStrikeBonus(Frame currentFrame)
     {
-        return frameList[frameList.Count - 2].frameIsStrike && frameList[frameList.Count - 2].addedBonusRolls < 2;
+        return frameList[frameList.Count - 2].FrameIsStrike && frameList[frameList.Count - 2].AddedBonusRolls < 2;
     }
 
     private bool IsLastFrame()
@@ -424,26 +423,25 @@ public class BowlingMatch
     {
         if (!IsFirstFrame())
         {
-            if (frameList.Last().frameIsSpare) // Is Spare Bonus
+            if (frameList.Last().FrameIsSpare) // Is Spare Bonus
             {
-                frameList.Last().AddFrameBonusPoint(bonusRolls.Sum());
+                frameList.Last().AddFrameBonusPoint(lastFrameBonusRolls.Sum());
             }
 
-            if (frameList.Last().frameIsStrike) //Is First Strike Bonus
+            if (frameList.Last().FrameIsStrike) //Is First Strike Bonus
             {
-                frameList.Last().AddFrameBonusPoint(bonusRolls.Sum());
+                frameList.Last().AddFrameBonusPoint(lastFrameBonusRolls.Sum());
             }
 
             if (frameList.Count >= 2)
             {
-                if (frameList[frameList.Count - 2].frameIsStrike) //Is Second Strike Bonus
+                if (frameList[frameList.Count - 2].FrameIsStrike) //Is Second Strike Bonus
                 {
-                    frameList[frameList.Count - 2].AddFrameBonusPoint(bonusRolls.First());
+                    frameList[frameList.Count - 2].AddFrameBonusPoint(lastFrameBonusRolls.First());
                 }
             }
         }
     }
-
 
     public int GetTotalScore()
     {
@@ -451,7 +449,7 @@ public class BowlingMatch
 
         foreach (var frame in frameList)
         {
-            totalScore += frame.frameTotalPoints;
+            totalScore += frame.FrameTotalPoints;
         }
 
         return totalScore;
@@ -460,12 +458,18 @@ public class BowlingMatch
 
 public class Frame
 {
-    public int throwedRolls;
-    public int frameKnockedPins;
-    public int frameTotalPoints;
-    public bool frameIsSpare;
-    public bool frameIsStrike;
-    public int addedBonusRolls;
+    private int frameKnockedPins;
+    private int throwedRolls;
+    private int frameTotalPoints;
+    private bool frameIsSpare;
+    private bool frameIsStrike;
+    private int addedBonusRolls;
+
+    public int ThrowedRolls { get => throwedRolls;}
+    public int FrameTotalPoints { get => frameTotalPoints;}
+    public bool FrameIsSpare { get => frameIsSpare;}
+    public bool FrameIsStrike { get => frameIsStrike;}
+    public int AddedBonusRolls { get => addedBonusRolls;}
 
     public void Roll(int rollKnockedPins = 0)
     {     
