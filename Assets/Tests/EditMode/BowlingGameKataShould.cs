@@ -4,25 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TestTools;
+using System.Linq;
 
 public class BowlingGameKataShould
 {
     // NOTAS//
     //Agregar al Readme del proyecto que significa cada cosa (Frame, Roll, Pin, etc.)
 
-    [UnityTest]
-    public IEnumerator InitialTest() //Borrar este test
-    {
-        yield return null;
-        Assert.AreEqual(true, true);
-    }
-
     //1° Requerimiento: Cada partida se compone de 10 turnos
     //Tiempo Estimado: 5min
     //Tiempo Real: 5min
 
     [UnityTest]
-    public IEnumerator HaveOnly10Turns() //Refactor Nombre
+    public IEnumerator HaveOnly10Frames()
     {
         //Arrange 
         yield return null;
@@ -31,7 +25,7 @@ public class BowlingGameKataShould
         //Act
 
         //Assert
-        Assert.AreEqual(bowlingMatch.matchFrames, 10);
+        Assert.AreEqual(10, bowlingMatch.matchFrames);
 
     }
 
@@ -48,7 +42,7 @@ public class BowlingGameKataShould
         //Act
 
         //Assert
-        Assert.AreEqual(bowlingMatch.pinsAmount, 10);
+        Assert.AreEqual(10, bowlingMatch.pinsAmount);
     }
 
     //3° Requerimiento: En cada turno el jugador hace 2 tiradas
@@ -69,7 +63,7 @@ public class BowlingGameKataShould
         frame.Roll();
 
         //Assert
-        Assert.AreEqual(frame.throwedRolls, 2);
+        Assert.AreEqual(2, frame.throwedRolls);
     }
 
     //4° Requerimiento: Si en un turno el jugador no tira los 10 bolos, la puntuacion del turno es el total de bolos tirados
@@ -78,23 +72,65 @@ public class BowlingGameKataShould
 
     [UnityTest]
 
-    public IEnumerator PointsGivenIsSumOfPinesKnockedIfLessThan10PinsKnocked()
+    public IEnumerator PointsGivenInFrameIsSumOfPinesKnockedIfLessThan10PinsKnocked()
     {
         //Arrange
         yield return null;
         Frame frame = new Frame();
-        int framePoints;
 
         //Act
-        frame.knockedPins = 5;
-        framePoints = frame.CalculatePoints(); //Poner el método CalculatePoints dentro de Roll y hacer Roll Roll en este test
+        frame.Roll(4);
+        frame.Roll(2);
 
         //Assert
-        Assert.AreEqual(framePoints, 5);
+        Assert.AreEqual(6, frame.framePoints);
 
     }
 
-    //PointsGivenSumOfPinesKnockedIfLessThan10PinsKnocked
+    //5° Requerimiento: Si en un turno el jugador tira los 10 bolos (un "spare"),
+    //la puntuacion es 10 mas el numero de bolos tirados en la siguiente tirada (Del siguiente turno).
+    //Estimado: 30min
+    //Real: 70min
+
+    [UnityTest]
+
+    public IEnumerator PointsGivenInFrameIs10PlusNextRollKnockedPinesIfSpare()
+    {
+        //Arrange
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int>{ 5,5,2 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence); 
+
+        //Assert
+        Assert.AreEqual(12, bowlingMatch.frameList.First().framePoints);
+
+    }
+
+    //6° Requerimiento: Si en la primer tirada del turno tira los 10 bolos (un strike)
+    //el turno acaba y la puntuacion es 10 mas el numero de bolos de las dos tiradas siguientes.
+    //Estimado: 30min
+    //Real: 
+
+    [UnityTest]
+
+    public IEnumerator Points_Given_In_Frame_Is_10_Plus_Next_Two_Rolls_Knocked_Pines_If_Strike()
+    {
+        //Arrange
+        yield return null;
+        BowlingMatch bowlingMatch = new BowlingMatch(10);
+        List<int> rollSequence = new List<int> { 10, 4, 2 };
+
+        //Act
+        bowlingMatch.CalculateMatchPoints(rollSequence);
+
+        //Assert
+        Assert.AreEqual(16, bowlingMatch.frameList.First().framePoints);
+
+    }
+
 
 }
 
@@ -110,7 +146,35 @@ public class BowlingMatch
     public int pinsAmount = 10;
     public int throwedRolls;
     public int knockPins;
-    public List<Frame> frameList;
+    public List<Frame> frameList = new List<Frame>();
+
+    public void CalculateMatchPoints(List<int> rollSequence) //  11min  22max  10 
+    {
+        Frame currentFrame = new Frame();
+
+        foreach (var knockedPins in rollSequence)
+        {    
+            currentFrame.Roll(knockedPins);
+            
+            if (currentFrame.IsFrameEnded())
+            {
+                frameList.Add(currentFrame);
+                currentFrame = new Frame();
+                continue;
+            }
+            if (frameList.Count == 0) continue;
+
+            if (frameList.Last().isSpare)
+            {
+                frameList.Last().AddBonusPoint(knockedPins);
+            }
+
+            if (frameList.Last().isStrike)
+            {
+                frameList.Last().AddBonusPoint(knockedPins);
+            }
+        }
+    }
 
 }
 
@@ -118,24 +182,42 @@ public class Frame
 {
     //puntos , rolls , pinos tirados 
     public int throwedRolls;
-    public int knockedPins;
+    public int frameKnockedPins;
     public int framePoints;
+    public bool isSpare;
+    public bool isStrike;
 
-
-    public void Roll()
+    public void Roll(int rollKnockedPins = 0)
     {
-
+       
+        if (IsFrameEnded()) return;
         throwedRolls++;
+        
+        frameKnockedPins += rollKnockedPins;
+        framePoints += rollKnockedPins;
 
+        isStrike = CheckStrike(rollKnockedPins);
+        isSpare = CheckSpare();
     }
 
-    public int CalculatePoints()
+    public bool IsFrameEnded()
     {
-        if(knockedPins < 10)
-        {
-            return knockedPins;
-        }
-        return 0;
+        return (isStrike || throwedRolls == 2);
+    }
+
+    private bool CheckStrike(int rollKnockedPins)
+    {
+        return rollKnockedPins == 10 && throwedRolls == 1;
+    }
+
+    private bool CheckSpare()
+    {
+        return frameKnockedPins == 10 && isStrike == false;
+    }
+
+    public void AddBonusPoint(int bonusPoint)
+    {
+        framePoints += bonusPoint;
     }
 }
 //Arrange
