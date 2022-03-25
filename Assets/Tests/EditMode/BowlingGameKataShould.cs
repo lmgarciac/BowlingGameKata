@@ -8,9 +8,6 @@ using System.Linq;
 
 public class BowlingGameKataShould
 {
-    // NOTAS//
-    //Agregar al Readme del proyecto que significa cada cosa (Frame, Roll, Pin, etc.)
-
     //1° Requerimiento: Cada partida se compone de 10 turnos
     //Tiempo Estimado: 5min
     //Tiempo Real: 5min

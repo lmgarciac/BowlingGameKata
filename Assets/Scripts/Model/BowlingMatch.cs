@@ -32,19 +32,19 @@ public class BowlingMatch
                     continue;
                 }
 
-                if (IsRollASpareBonus(currentFrame)) // Is Spare Bonus
+                if (IsRollASpareBonus(currentFrame))
                 {
                     frameList.Last().AddFrameBonusPoint(knockedPins);
                 }
 
-                if (IsRollAFirstStrikeBonus(currentFrame)) //Is First Strike Bonus
+                if (IsRollAFirstStrikeBonus(currentFrame))
                 {
                     frameList.Last().AddFrameBonusPoint(knockedPins);
                 }
 
                 if (frameList.Count >= 2)
                 {
-                    if (IsRollASecondStrikeBonus(currentFrame)) //Is Second Strike Bonus
+                    if (IsRollASecondStrikeBonus(currentFrame))
                     {
                         frameList[frameList.Count - 2].AddFrameBonusPoint(knockedPins);
                     }
@@ -96,19 +96,19 @@ public class BowlingMatch
     {
         if (!IsFirstFrame())
         {
-            if (frameList.Last().FrameIsSpare) // Is Spare Bonus
+            if (frameList.Last().FrameIsSpare)
             {
                 frameList.Last().AddFrameBonusPoint(lastFrameBonusRolls.Sum());
             }
 
-            if (frameList.Last().FrameIsStrike) //Is First Strike Bonus
+            if (frameList.Last().FrameIsStrike)
             {
                 frameList.Last().AddFrameBonusPoint(lastFrameBonusRolls.Sum());
             }
 
             if (frameList.Count >= 2)
             {
-                if (frameList[frameList.Count - 2].FrameIsStrike) //Is Second Strike Bonus
+                if (frameList[frameList.Count - 2].FrameIsStrike)
                 {
                     frameList[frameList.Count - 2].AddFrameBonusPoint(lastFrameBonusRolls.First());
                 }

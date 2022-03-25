@@ -4,18 +4,14 @@ using UnityEngine;
 using TMPro;
 public class ScoreBoardController : MonoBehaviour
 {
-
-    public List<FrameController> framesControllers = new List<FrameController>();
+    public List<FrameController> frameControllers = new List<FrameController>();
     public TMP_InputField inputFieldTotal;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateFrameScores(List<Frame> calculatedFrames)
     {
-        
+        for (int i = 0; i < calculatedFrames.Count; i++)
+        {
+            frameControllers[i].frameScore.text = calculatedFrames[i].FrameTotalPoints.ToString();
+        }
     }
 }

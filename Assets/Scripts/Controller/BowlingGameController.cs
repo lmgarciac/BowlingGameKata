@@ -4,41 +4,40 @@ using UnityEngine;
 
 public class BowlingGameController : MonoBehaviour
 {
-    BowlingMatch bowlingMatch;
     [SerializeField] private ScoreBoardController scoreBoardController;
-    private List<int> entryRolls = new List<int>();
+
+    BowlingMatch bowlingMatch;
+    private List<int> rollSequence = new List<int>();
 
     public void CalculateMatchPoints() 
     {
         bowlingMatch = new BowlingMatch(10);
-        entryRolls.Clear();
-        foreach (var frameController in scoreBoardController.framesControllers)
+        rollSequence.Clear();
+        foreach (var frameController in scoreBoardController.frameControllers)
         {
-
             if (frameController.firstRoll.text != "-")
             {
-                entryRolls.Add(int.Parse(frameController.firstRoll.text));
+                rollSequence.Add(int.Parse(frameController.firstRoll.text));
             }
             if (frameController.secondRoll.text != "-")
             {
-                entryRolls.Add(int.Parse(frameController.secondRoll.text));
-            }
-            
+                rollSequence.Add(int.Parse(frameController.secondRoll.text));
+            }          
         }
         
-        bowlingMatch.CalculateMatchPoints(entryRolls);
-
+        bowlingMatch.CalculateMatchPoints(rollSequence);
         scoreBoardController.inputFieldTotal.text = bowlingMatch.GetTotalScore().ToString();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        scoreBoardController.UpdateFrameScores(bowlingMatch.frameList);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ClearValues()
     {
-        
+        foreach (var frameController in scoreBoardController.frameControllers)
+        {
+            frameController.firstRoll.text = "-";
+            frameController.secondRoll.text = "-";
+            frameController.frameScore.text = "-";
+        }
+        scoreBoardController.inputFieldTotal.text = "-";
     }
 }
