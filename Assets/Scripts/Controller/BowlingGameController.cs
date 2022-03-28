@@ -25,7 +25,7 @@ public class BowlingGameController : MonoBehaviour
             }          
         }
         
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
         scoreBoardController.inputFieldTotal.text = bowlingMatch.GetTotalScore().ToString();
         scoreBoardController.UpdateFrameScores(bowlingMatch.frameList);
     }

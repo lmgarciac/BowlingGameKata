@@ -99,7 +99,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 5, 5, 2 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(12, bowlingMatch.frameList.First().FrameTotalPoints);
@@ -121,7 +121,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 10, 4, 2 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(16, bowlingMatch.frameList.First().FrameTotalPoints);
@@ -142,7 +142,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 10, 3, 5 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.IsTrue(bowlingMatch.isLastFrame);
@@ -163,7 +163,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 10, 3, 5 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(18, bowlingMatch.frameList.Last().FrameTotalPoints);
@@ -185,7 +185,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 6, 4, 3 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(13, bowlingMatch.frameList.Last().FrameTotalPoints);
@@ -207,7 +207,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 0, 1, 6, 4, 10 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(20, bowlingMatch.frameList.Last().FrameTotalPoints);
@@ -224,7 +224,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(0, bowlingMatch.GetTotalScore());
@@ -240,7 +240,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(300, bowlingMatch.GetTotalScore());
@@ -256,7 +256,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 5, 5, 6, 4, 3, 7, 1, 9, 2, 8, 3, 7, 4, 6, 2, 8, 8, 2, 1, 9, 5 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(135, bowlingMatch.GetTotalScore());
@@ -272,7 +272,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 3, 2, 5, 1, 4, 2, 7, 1, 4, 2, 0, 8, 1, 7, 1, 0, 0, 1, 3, 2 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(54, bowlingMatch.GetTotalScore());
@@ -288,7 +288,7 @@ public class BowlingGameKataShould
         List<int> rollSequence = new List<int> { 5, 5, 10, 10, 3, 7, 1, 9, 10, 8, 2, 10, 10, 10, 5, 5 };
 
         //Act
-        bowlingMatch.CalculateMatchPoints(rollSequence);
+        bowlingMatch.CalculateFramesPoints(rollSequence);
 
         //Assert
         Assert.AreEqual(209, bowlingMatch.GetTotalScore());
@@ -305,7 +305,7 @@ public class BowlingGameKataShould
             BowlingMatch bowlingMatch = new BowlingMatch(10);
 
             //Act
-            bowlingMatch.CalculateMatchPoints(rollSequence.Item1);
+            bowlingMatch.CalculateFramesPoints(rollSequence.Item1);
 
             //Assert
             Assert.AreEqual(rollSequence.Item2, bowlingMatch.GetTotalScore());

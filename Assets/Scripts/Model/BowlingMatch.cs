@@ -16,7 +16,7 @@ public class BowlingMatch
 
     private List<int> lastFrameBonusRolls = new List<int>();
 
-    public void CalculateMatchPoints(List<int> rollSequence)
+    public void CalculateFramesPoints(List<int> rollSequence)
     {
         Frame currentFrame = new Frame();
 
